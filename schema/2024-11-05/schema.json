@@ -687,6 +687,16 @@
             "type": "object"
         },
         "JSONRPCError": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/JSONRPCErrorWithKnownId"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCErrorWithUnknownId"
+                }
+            ]
+        },
+        "JSONRPCErrorWithKnownId": {
             "description": "A response to a request that indicates an error occurred.",
             "properties": {
                 "error": {
@@ -724,6 +734,49 @@
             ],
             "type": "object"
         },
+        "JSONRPCErrorWithUnknownId": {
+            "description": "A response to a request that indicates an error occurred, but the ID of the request could not be determined.",
+            "properties": {
+                "error": {
+                    "properties": {
+                        "code": {
+                            "description": "The error type that occurred.",
+                            "enum": [
+                                -32600,
+                                -32700
+                            ],
+                            "type": "number"
+                        },
+                        "data": {
+                            "description": "Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.)."
+                        },
+                        "message": {
+                            "description": "A short description of the error. The message SHOULD be limited to a concise single sentence.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "message"
+                    ],
+                    "type": "object"
+                },
+                "id": {
+                    "description": "The ID of the request could not be determined, so it MUST be null.",
+                    "type": "null"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "id",
+                "jsonrpc"
+            ],
+            "type": "object"
+        },
         "JSONRPCMessage": {
             "anyOf": [
                 {
@@ -736,10 +789,10 @@
                     "$ref": "#/definitions/JSONRPCResponse"
                 },
                 {
-                    "$ref": "#/definitions/JSONRPCError"
+                    "$ref": "#/definitions/JSONRPCErrorWithKnownId"
                 },
                 {
-                    "$ref": "#/definitions/JSONRPCParseError"
+                    "$ref": "#/definitions/JSONRPCErrorWithUnknownId"
                 }
             ]
         },
@@ -768,40 +821,6 @@
             "required": [
                 "jsonrpc",
                 "method"
-            ],
-            "type": "object"
-        },
-        "JSONRPCParseError": {
-            "description": "A response to a request that indicates a parse error occurred.",
-            "properties": {
-                "error": {
-                    "properties": {
-                        "code": {
-                            "const": -32700,
-                            "type": "integer"
-                        },
-                        "message": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "code",
-                        "message"
-                    ],
-                    "type": "object"
-                },
-                "id": {
-                    "type": "null"
-                },
-                "jsonrpc": {
-                    "const": "2.0",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "error",
-                "id",
-                "jsonrpc"
             ],
             "type": "object"
         },

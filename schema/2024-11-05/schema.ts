@@ -3,8 +3,7 @@ export type JSONRPCMessage =
   | JSONRPCRequest
   | JSONRPCNotification
   | JSONRPCResponse
-  | JSONRPCError
-  | JSONRPCParseError;
+  | JSONRPCError;
 
 export const LATEST_PROTOCOL_VERSION = "2024-11-05";
 export const JSONRPC_VERSION = "2.0";
@@ -90,7 +89,7 @@ export const INTERNAL_ERROR = -32603;
 /**
  * A response to a request that indicates an error occurred.
  */
-export interface JSONRPCError {
+export interface JSONRPCErrorWithKnownId {
   jsonrpc: typeof JSONRPC_VERSION;
   id: RequestId;
   error: {
@@ -110,15 +109,30 @@ export interface JSONRPCError {
 }
 
 /**
-  * A response to a request that indicates a parse error occurred.
-  */
-export interface JSONRPCParseError extends JSONRPCError {
+ * A response to a request that indicates an error occurred, but the ID of the request could not be determined.
+ */
+export interface JSONRPCErrorWithUnknownId extends JSONRPCErrorWithKnownId {
+  /**
+    * The ID of the request could not be determined, so it MUST be null.
+    */
   id: null;
   error: {
-    code: typeof PARSE_ERROR;
+    /**
+      * The error type that occurred.
+      */
+    code: typeof PARSE_ERROR | typeof INVALID_REQUEST;
+    /**
+      * A short description of the error. The message SHOULD be limited to a concise single sentence.
+      */
     message: string;
+    /**
+      * Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.).
+      */
+    data?: unknown;
   };
 }
+
+export type JSONRPCError = JSONRPCErrorWithKnownId | JSONRPCErrorWithUnknownId;
 
 /* Empty result */
 /**
