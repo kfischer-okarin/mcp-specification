@@ -3,7 +3,8 @@ export type JSONRPCMessage =
   | JSONRPCRequest
   | JSONRPCNotification
   | JSONRPCResponse
-  | JSONRPCError;
+  | JSONRPCError
+  | JSONRPCParseError;
 
 export const LATEST_PROTOCOL_VERSION = "2024-11-05";
 export const JSONRPC_VERSION = "2.0";
@@ -105,6 +106,17 @@ export interface JSONRPCError {
      * Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.).
      */
     data?: unknown;
+  };
+}
+
+/**
+  * A response to a request that indicates a parse error occurred.
+  */
+export interface JSONRPCParseError extends JSONRPCError {
+  id: null;
+  error: {
+    code: typeof PARSE_ERROR;
+    message: string;
   };
 }
 

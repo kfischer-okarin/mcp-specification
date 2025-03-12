@@ -737,6 +737,9 @@
                 },
                 {
                     "$ref": "#/definitions/JSONRPCError"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCParseError"
                 }
             ]
         },
@@ -765,6 +768,40 @@
             "required": [
                 "jsonrpc",
                 "method"
+            ],
+            "type": "object"
+        },
+        "JSONRPCParseError": {
+            "description": "A response to a request that indicates a parse error occurred.",
+            "properties": {
+                "error": {
+                    "properties": {
+                        "code": {
+                            "const": -32700,
+                            "type": "integer"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "message"
+                    ],
+                    "type": "object"
+                },
+                "id": {
+                    "type": "null"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "id",
+                "jsonrpc"
             ],
             "type": "object"
         },
